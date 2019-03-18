@@ -1,0 +1,71 @@
+
+
+touch file
+
+ls -l file
+
+   owner  group  others
+-  ---    ---     ---
+
+   rwx   rwx     rwx 
+
+ 4  r read
+ 2  w write
+ 1  x execute
+
+   in files, x => run the file - execute
+   in directories, x => list the content
+
+
+rwx - 421   = 7
+r-x - 41    = 5
+rw- - 42    = 6
+r-- - 4     = 4
+-wx - 21    = 3
+-w- - 2     = 2
+--x - 1     = 1
+
+files
+
+666 - rw- rw- rw- 
+664 - rw- rw- r--
+
+640 - rw- r-- ---
+
+
+directories
+
+777 - rwx rwx rwx
+775 - rwx rwx r-x
+
+750 - rwx r-x ---
+
+umask
+
+umask is a variable you set to override the default permissions on files and directories
+
+default file => 666
+default directory => 777
+
+default - umask = permission
+
+file      directories
+
+666         777
+026         027
+---         ---
+640         750
+
+666 - 027 = 640 
+
+
+alvaro's mac
+
+666         777
+022         022
+---         ---
+644         755
+
+
+
+
