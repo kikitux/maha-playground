@@ -13,23 +13,26 @@ Vagrant.configure("2") do |config|
     vb.memory = "1024"
   end
 
-  # server
-  config.vm.define "server" do |server|
-    server.vm.hostname = "server"
-    server.vm.network "private_network", ip: "192.168.56.20"
-    server.vm.network "forwarded_port", guest: 8500, host: 8500
+  # consul
+  config.vm.define "consul" do |consul|
+    consul.vm.hostname = "consul"
+    consul.vm.network "private_network", ip: "192.168.56.20"
+    consul.vm.network "forwarded_port", guest: 8500, host: 8500 # consul http ui port
 
-    server.vm.provision "shell", 
+    consul.vm.provision "shell", 
       path: "https://raw.githubusercontent.com/kikitux/curl-bash/master/consul-1server/consul.sh"
 
   end
 
   # metrics
-  config.vm.define "server" do |metrics|
+  config.vm.define "metrics" do |metrics|
     metrics.vm.hostname = "metrics"
     metrics.vm.network "private_network", ip: "192.168.56.22"
-    metrics.vm.network "forwarded_port", guest: 3000, host: 3000 
-    metrics.vm.network "forwarded_port", guest: 9090, host: 9090
+    metrics.vm.network "forwarded_port", guest: 3000, host: 3000 # grafana
+    metrics.vm.network "forwarded_port", guest: 9090, host: 9090 # prometheus
+
+    metrics.vm.provision "shell",
+    path: "https://raw.githubusercontent.com/kikitux/curl-bash/master/consul-client/consul.sh"
 
     metrics.vm.provision "shell",
       path: "https://raw.githubusercontent.com/kikitux/curl-bash/master/provision/prometheus.sh"
@@ -37,16 +40,13 @@ Vagrant.configure("2") do |config|
     metrics.vm.provision "shell",
       path: "https://raw.githubusercontent.com/kikitux/curl-bash/master/provision/grafana.sh"
 
-    metrics.vm.provision "shell",
-      path: "https://raw.githubusercontent.com/kikitux/curl-bash/master/consul-client/consul.sh"
-
   end
 
 
   # redis
   config.vm.define "redis" do |redis|
     redis.vm.hostname = "redis"
-    redis.vm.network "private_network", ip: "192.168.56.25"
+    redis.vm.network "private_network", ip: "192.168.56.24"
 
     redis.vm.provision "shell",
       path: "https://raw.githubusercontent.com/kikitux/curl-bash/master/consul-client/consul.sh"
@@ -56,6 +56,7 @@ Vagrant.configure("2") do |config|
 
   end
 
+  # where we will run our applications
   # client
   (1..1).each do |i|
     config.vm.define "client#{i}" do |vm|
